@@ -8,7 +8,8 @@ window.requestAnimationFrame =
 var isMobile = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent) || Math.min(window.innerWidth, window.innerHeight) < 600;
 var canvas = document.getElementById('heart');
 var ctx = canvas.getContext('2d');
-var koef = isMobile ? 0.75 : 1;
+var koef = 1; // লজিক্যাল সাইজ = CSS পিক্সেল (ঝাপসা হওয়া ঠেকাতে)
+var dpr = Math.min(window.devicePixelRatio || 1, 2);
 var dotSize = isMobile ? 1.5 : 1.2;
 var hs = 1; // হার্ট স্কেল (স্ক্রিন অনুযায়ী)
 var width, height;
@@ -206,8 +207,11 @@ function sampleTextPoints() {
 
 function resize() {
   var size = getViewportSize();
-  width = canvas.width = koef * size[0];
-  height = canvas.height = koef * size[1];
+  width = size[0];
+  height = size[1];
+  canvas.width = Math.round(width * dpr);
+  canvas.height = Math.round(height * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.fillStyle = "rgba(0,0,0,1)";
   ctx.fillRect(0, 0, width, height);
   hs = Math.min(1, width / 440, height / 330);
